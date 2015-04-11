@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>微信菜单管理</title>
+<style>
+	#zidingyi{
+		position: absolute;margin: auto;left: 0;right: 0;top: 0;bottom: 0;
+		width: 1000px;height: 640px;background-color: #FDFDFD;
+		font-family:'宋体';/*这里对字体并没有很好的设置*/
+	}
+	ul{list-style:none;margin:0px;padding: 0px;}
+	/*#zidingyi为主体部分，嵌于其他页面时记得改以上的css*/
+	#title{width: 88%;margin-left: 10%;margin-right: 2%;height: 60px;border-bottom: 3px solid #aaa;}
+	.maintitle{font-size: 30px;color: #606060;line-height: 60px;}
+	.subtitle{color: #A6A6A6;font-size: 15px;margin-left: 10px;}
+	#bodydiv{width: 88%;margin-left: 10%;margin-right: 2%;}
+	.left{
+		width: 300px;min-height: 300px;background-color: #F8F8F8;margin-top: 20px;
+		color: #606060;font-size: 14px;float: left;
+	}
+	.lefttop{width: 100%;background-color: #E2E2E2;height: 50px;}
+	.lefttop>span{line-height: 50px;margin-left: 20px;}
+	.listdiv{margin-top: 20px;margin-left: 12px;width: 270px;
+		border-bottom: 1px solid #e4e4e4;padding-bottom: 20px;}
+	.listspan{width: 259px;display: block;cursor: pointer;line-height: 30px;height: 30px;
+		padding-left: 8px;position: relative;}
+	.listspan:hover{background-color: #DBDBDB;}
+	.delete{
+		width: 13px;height: 15px;background-image: url("delete1.png");display: none;
+		background-size:cover;float: right; margin-top: 7px;margin-right: 12px;
+	}
+	.pan{
+		width: 14px;height: 14px;background-image: url("pan1.png");display: none;
+		background-size:cover;float: right; margin-top: 7px;margin-right: 12px;
+	}
+	.pan:hover{background-image: url("pan2.png");}
+	.delete:hover{background-image: url("delete2.png");}
+	.listspan:hover .pan{display: block;}
+	.listul{margin-left: 20px;}
+	.listli{height: 30px;line-height: 30px;border-left: 1px solid #d1d1d1;position: relative;}
+	.listli[kind="0"] span{color: #aaa;}
+	.listli .liname{float: left;display: block;width: 215px;cursor: pointer;padding-left: 5px;position: relative;}
+	.listli .liname:hover{background-color: #DBDBDB;}
+	.listli .liname:hover .delete{display: block;}
+	.listli .liname:hover .pan{display: block;}
+	.limenu{
+		position: absolute;left: 274px;top: 0;width: 300px;height: 100px;border: 1px solid #777;
+		background-color: white;z-index: 100;display: none;
+	}
+	.menuselect{
+		width: 160px;height: 30px;font-size: 20px;line-height: 30px;
+		position: absolute;left: 10px;top: 10px;cursor: pointer;
+	}
+	.limenu>.end{
+		display: block;position: absolute;right: 5px;top: 5px;color: #999;cursor: pointer;
+		font-size: 24px;height: 20px;width: 16px;line-height: 16px;
+	}
+	.line{
+		height: 1px;width: 26px;background-color: #d1d1d1;position: relative;float: left;
+		margin: 14px 0px 15px 0; 
+	}
+	.addline{width: 26px;height: 15px;border-left: 1px solid #d1d1d1;border-bottom: 1px solid #d1d1d1;
+		float: left;margin-right: 5px;position: relative;}
+	.addli{color: #3b76b0;cursor: pointer;height: 30px;line-height: 30px;position: relative;}
+	#right{
+		height: 487px;width: 270px;background-color: #f6f6f6;
+		float: right;margin-top: 20px;margin-right: 20px;position: relative;
+	}
+	#three{width: 230px;height: 30px;position: absolute;bottom: 0;left: 21px}
+	.rightframe{position: relative;bottom: 0;float: left;}
+	.rightlist{width: 75px;height: 30px;text-align: center;
+		line-height: 30px;cursor: pointer;overflow: hidden;
+	}
+	.rightul{position: absolute;bottom: 35px;width: 67px;left: 4px;display: none;
+		border: 1px solid #b6b6b6;}
+	.rightli{text-align: center;line-height: 30px;height: 30px;border-bottom: 1px solid #DADADA;
+		background-color: white;overflow: hidden;
+	}
+	#rightimg{position: absolute;top: 0;left: 0;right: 0;margin: auto;}
+	.namechange{position: absolute;top: 0;width: 220px;height: 30px;background-color: #FDFDFD;
+		z-index:100;left: 30px;padding-left: 5px;}
+	.topname{left: 0;width: 262px;}
+	.nameinput{
+		border: 1px solid gray;outline: none;
+		width: 128px;height: 18px;font-size: 14px;line-height: 18px;
+		padding: 2px 17px 2px 4px;
+	}
+	.enter{
+		background-image: url("enter1.png");cursor: pointer;
+		position: absolute;top: 10px;left: 138px;width: 12px;height: 11px;
+	}
+	.enter:hover{background-image: url("enter2.png");}
+	.cancel{position: absolute;right: 12px;top: 0px;font-size: 14px;color: #08c;cursor: pointer;}
+</style>
+</head>
+<body>
+<!--以下为html主体部分-->
+<div id="zidingyi">
+	<div id="title">
+		<span class="maintitle">菜单管理</span><span class="subtitle">这里是说明，随便写点什么</span>
+	</div>
+	<div id="bodydiv">
+		<div class="left">
+			<div class="lefttop"><span>自定义菜单</span></div>
+			<div class="listdiv">
+				<span class="listspan"><span>栏目1</span>
+					<div class="pan"></div>
+				</span>
+				<ul class="listul">
+					<li class="listli" kind="1"><div class="line"></div>
+						<span class="liname"><span>栏目1.1</span>
+							<div class="delete"></div>
+							<div class="pan"></div>
+						</span>
+						<div class="limenu">
+							<div class="end">x</div>
+							<select name="menutype" class="menuselect">
+								<option value="0">请选择分类…</option>
+								<option value="1" selected="selected">类型1</option>
+								<option value="2">类型2</option>
+								<option value="3">类型3</option>
+								<option value="4">类型4</option>
+								<option value="5">类型5</option>
+							</select>
+						</div>
+					</li>
+					<li class="listli" kind="1"><div class="line"></div>
+						<span class="liname"><span>栏目1.2</span>
+							<div class="delete"></div>
+							<div class="pan"></div>
+						</span>
+						<div class="limenu">
+							<div class="end">x</div>
+							<select name="menutype" class="menuselect">
+								<!--菜单内具体功能由于每个都不一样这里不做处理-->
+								<option value="0">请选择分类…</option>
+								<option value="1" selected="selected">类型1</option>
+								<option value="2">类型2</option>
+								<option value="3">类型3</option>
+								<option value="4">类型4</option>
+								<option value="5">类型5</option>
+							</select>
+						</div>
+					</li>
+					<li class="addli"><div class="addline"></div><span>+ 添加子菜单</span></li>
+				</ul>
+			</div><div class="listdiv">
+				<span class="listspan"><span>栏目2</span>
+					<div class="pan"></div>
+				</span>
+				<ul class="listul">
+					<li class="listli" kind="1"><div class="line"></div>
+						<span class="liname"><span>栏目2.1</span>
+							<div class="delete"></div>
+							<div class="pan"></div>
+						</span>
+						<div class="limenu">
+							<div class="end">x</div>
+							<select name="menutype" class="menuselect">
+								<!--菜单内具体功能由于每个都不一样这里不做处理-->
+								<option value="0">请选择分类…</option>
+								<option value="1" selected="selected">类型1</option>
+								<option value="2">类型2</option>
+								<option value="3">类型3</option>
+								<option value="4">类型4</option>
+								<option value="5">类型5</option>
+							</select>
+						</div>
+					</li>
+					<li class="listli" kind="1"><div class="line"></div>
+						<span class="liname"><span>栏目2.2</span>
+							<div class="delete"></div>
+							<div class="pan"></div>
+						</span>
+						<div class="limenu">
+							<div class="end">x</div>
+							<select name="menutype" class="menuselect">
+								<!--菜单内具体功能由于每个都不一样这里不做处理-->
+								<option value="0">请选择分类…</option>
+								<option value="1" selected="selected">类型1</option>
+								<option value="2">类型2</option>
+								<option value="3">类型3</option>
+								<option value="4">类型4</option>
+								<option value="5">类型5</option>
+							</select>
+						</div>
+					</li>
+					<li class="addli"><div class="addline"></div><span>+ 添加子菜单</span></li>
+				</ul>
+			</div><div class="listdiv">
+				<span class="listspan"><span>栏目3</span>
+					<div class="pan"></div>
+				</span>
+				<ul class="listul">
+					<li class="listli" kind="1"><div class="line"></div>
+						<span class="liname"><span>栏目3.1</span>
+							<div class="delete"></div>
+							<div class="pan"></div>
+						</span>
+						<div class="limenu">
+							<div class="end">x</div>
+							<select name="menutype" class="menuselect">
+								<!--菜单内具体功能由于每个都不一样这里不做处理-->
+								<option value="0">请选择分类…</option>
+								<option value="1" selected="selected">类型1</option>
+								<option value="2">类型2</option>
+								<option value="3">类型3</option>
+								<option value="4">类型4</option>
+								<option value="5">类型5</option>
+							</select>
+						</div>
+					</li>
+					<li class="listli" kind="1"><div class="line"></div>
+						<span class="liname"><span>栏目3.2</span>
+							<div class="delete"></div>
+							<div class="pan"></div>
+						</span>
+						<div class="limenu">
+							<div class="end">x</div>
+							<select name="menutype" class="menuselect">
+								<!--菜单内具体功能由于每个都不一样这里不做处理-->
+								<option value="0">请选择分类…</option>
+								<option value="1" selected="selected">类型1</option>
+								<option value="2">类型2</option>
+								<option value="3">类型3</option>
+								<option value="4">类型4</option>
+								<option value="5">类型5</option>
+							</select>
+						</div>
+					</li>
+					<li class="addli"><div class="addline"></div><span>+ 添加子菜单</span></li>
+				</ul>
+			</div>
+		</div>
+		<div id="right">
+			<img src="./phone.jpg" id="rightimg">
+			<div id="three">
+				<div class="rightframe">
+					<div class="rightlist" id="rightlist1"style="border-right: 1px solid #BEBEBE;"></div>
+					<ul class="rightul" id="rightul1">
+						<!--此处数据由js生成-->
+					</ul>
+				</div>
+				<div class="rightframe">
+					<div class="rightlist" id="rightlist2" style="border-right: 1px solid #BEBEBE;"></div>
+					<ul class="rightul" id="rightul2">
+					</ul>
+				</div>
+				<div class="rightframe">
+					<div class="rightlist" id="rightlist3"></div>
+					<ul class="rightul" id="rightul3">
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+<script type="text/javascript">
+function read(){
+	var i = 0, j = 0;
+	$(".listdiv").each(function(){
+		i++;j = 0;
+		var title = $(this).children(".listspan").children("span").first().text();
+		$("#rightlist"+i).text(title);
+		$("#rightul"+i).empty();
+		$(this).children(".listul").children(".listli").each(function(){
+			j++;
+			var subtitle = $(this).children(".liname").children("span").first().text();
+			$("#rightul"+i).append('<li class="rightli" id="rightli"'+j+'>'+subtitle+'</li>');
+		});
+	});
+}
+$(document).ready(function(){
+	read();//初始化一下
+	$('.rightlist').click(function(){
+		var isshow = $(this).siblings(".rightul").is(":hidden");
+		$(".rightul").hide();
+		if (isshow && $(this).siblings(".rightul").html()) {
+			$(this).siblings(".rightul").show();
+		};
+	});
+	$(".listli .liname").live("click",function(){
+		$(".limenu").hide();
+		$(this).siblings(".limenu").show();
+	});
+	$(".end").live("click",function(){
+		$(this).parent(".limenu").hide();
+	});
+	$(".menuselect").live("change",function(){
+		var kind = $(this).val();
+		$(this).parents(".listli").attr("kind",kind);
+	});
+	$(".delete").live("click",function(e){
+		e.stopPropagation();//阻止事件冒泡
+		if (confirm("是否确认删除")) {
+			/*
+				这里添加删除子栏目的AJAX事件
+			*/
+			$(this).parents(".listli").remove();
+			read();
+		};
+	});
+	$(".listspan .pan").live("click",function(){
+		var ob = $(this).parents(".listspan");
+		var titlename = $(this).siblings("span").text();
+		$(".namechange").remove();
+		ob.append('<div class="namechange topname"><input type="text" class="nameinput" value="'+titlename+'"><div class="enter"></div><span class="cancel">取消</span></div>');
+		$(".cancel").click(function(){
+			$(this).parent(".namechange").remove();
+		});
+		//下面需要增加ajax事件来与后端交互
+		$(".enter").click(function(){
+			var newname = $(this).siblings(".nameinput").val();
+			ob.children("span").text(newname);
+			read();
+			$(".namechange").remove();
+		});
+		$(".nameinput").keypress(function(e){
+			if (e.which == 13) {
+				var newname = $(this).val();
+				ob.children("span").text(newname);
+				read();
+				$(".namechange").remove();
+			};
+		});
+	});
+	$(".liname .pan").live("click",function(e){
+		e.stopPropagation();//阻止事件冒泡
+		var ob = $(this).parents(".listli");
+		var titlename = $(this).siblings("span").text();
+		$(".namechange").remove();
+		ob.append('<div class="namechange"><input type="text" class="nameinput" value="'+titlename+'"><div class="enter"></div><span class="cancel">取消</span></div>');
+		$(".cancel").click(function(){
+			$(this).parent(".namechange").remove();
+		});
+		//下面需要增加ajax事件来与后端交互
+		$(".enter").click(function(){
+			var newname = $(this).siblings(".nameinput").val();
+			ob.children(".liname").children("span").text(newname);
+			read();
+			$(".namechange").remove();
+		});
+		$(".nameinput").keypress(function(e){
+			if (e.which == 13) {
+				var newname = $(this).val();
+				ob.children(".liname").children("span").text(newname);
+				read();
+				$(".namechange").remove();
+			};
+		});
+	});
+	$(".addli>span").click(function(){
+		var ob = $(this).parents(".addli");
+		$(".namechange").remove();
+		$(".limenu").hide();
+		ob.append('<div class="namechange"><input type="text" class="nameinput" value=""><div class="enter"></div><span class="cancel">取消</span></div>');
+		$(".cancel").click(function(){
+			$(this).parent(".namechange").remove();
+		});
+		$(".enter").click(function(){
+			var newname = $(this).siblings(".nameinput").val();
+			var par = $(this).parents(".addli");
+			addnewli(par,newname);
+		});
+		$(".nameinput").keypress(function(e){
+			if (e.which == 13) {
+				var newname = $(this).val();
+				var par = $(this).parents(".addli");
+				addnewli(par,newname);
+			};
+		});
+		function addnewli(par,newname){
+			par.before('<li class="listli" kind="0"><div class="line"></div><span class="liname"><span>'+newname+'</span><div class="delete"></div><div class="pan"></div></span><div class="limenu" style="display: block;"><div class="end">x</div><select name="menutype" class="menuselect"><option value="0">请选择分类…</option><option value="1" selected="selected">类型1</option><option value="2">类型2</option><option value="3">类型3</option><option value="4">类型4</option><option value="5">类型5</option></select></div></li>');
+			$(".namechange").remove();
+			read();
+
+		}
+	});
+});
+</script>
+</body>
+</html>
